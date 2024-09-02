@@ -67,11 +67,11 @@ class InstitutionResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return ucwords($state);
                     }),
-                TextColumn::make('city')
-                    ->label('Location')
-                    ->formatStateUsing(function ($record) {
-                        return $record->city . ', ' . $record->state;
-                    }),
+                // TextColumn::make('city')
+                //     ->label('Location')
+                //     ->formatStateUsing(function ($record) {
+                //         return $record->city . ', ' . $record->state;
+                //     }),
                 TextColumn::make('supported_methods')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -80,7 +80,7 @@ class InstitutionResource extends Resource
                         'boost' => 'success',
                     }),
                 TextColumn::make('user.name')
-                    ->label('Created By')
+                    ->label('Created by')
             ])
             ->filters([
                 //
@@ -90,7 +90,16 @@ class InstitutionResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->hidden(function () {
+                            $user = auth()->user();
+
+                            if($user->isAdmin()) {
+                                return false;
+                            }
+
+                            return true;
+                        }),
                 ]),
             ]);
     }

@@ -21,6 +21,13 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Settings';
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $currentUser = auth()->user();
+
+        return $currentUser->isAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
